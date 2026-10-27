@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency Hustle: The Marketing Agency Career Sim</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/boss-screen.css">
+</head>
+<body>
+
+  <!-- ROOT APPLICATION SHELL -->
+  <div id="app">
+
+    <!-- TOP HEADER / SAAS GLOBAL NAVBAR -->
+    <header class="top-header" role="banner">
+      <div class="brand-section">
+        <div class="logo-badge">
+          <div class="logo-icon">🚀</div>
+          <span>AGENCY HUSTLE</span>
+        </div>
+        <div class="agency-status-badge">
+          <span class="agency-name-text" id="header-agency-name">Pixel & Burnout Media</span>
+          <span class="agency-type-pill" id="header-agency-type">Factoría Cárnica</span>
+        </div>
+      </div>
+
+      <!-- VITAL METRICS BAR -->
+      <div class="vital-metrics-bar" aria-label="Métricas de estado del jugador">
+        <!-- Week / Turn -->
+        <div class="metric-pill" title="Semana actual y año laboral">
+          <span class="metric-icon">📅</span>
+          <div class="metric-info">
+            <span class="metric-label">Tiempo</span>
+            <span class="metric-value" id="stat-turn-time">Sem 1 · Año 1</span>
+          </div>
+        </div>
+
+        <!-- Weekly Hours / Action Points -->
+        <div class="metric-pill" title="Horas disponibles vs asignadas esta semana">
+          <span class="metric-icon">⚡</span>
+          <div class="metric-info">
+            <span class="metric-label">Horas / PA</span>
+            <span class="metric-value" id="stat-hours-pa">40 / 40h</span>
+          </div>
+        </div>
+
+        <!-- Mental Health / Burnout -->
+        <div class="metric-pill" title="Salud Mental (si llega a 0%, colapso o dimisión)">
+          <span class="metric-icon">🧠</span>
+          <div class="metric-info">
+            <span class="metric-label">Salud Mental</span>
+            <span class="metric-value" id="stat-mental-health">85%</span>
+            <div class="metric-meter-container">
+              <div class="metric-meter-fill health" id="bar-mental-health" style="width: 85%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stress Level -->
+        <div class="metric-pill" title="Nivel de Estrés (>75% causa errores y penalizaciones)">
+          <span class="metric-icon">🔥</span>
+          <div class="metric-info">
+            <span class="metric-label">Estrés</span>
+            <span class="metric-value" id="stat-stress">25%</span>
+            <div class="metric-meter-container">
+              <div class="metric-meter-fill stress" id="bar-stress" style="width: 25%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internal Reputation -->
+        <div class="metric-pill" title="Reputación con socios y jefes de equipo">
+          <span class="metric-icon">⭐</span>
+          <div class="metric-info">
+            <span class="metric-label">Reputación</span>
+            <span class="metric-value" id="stat-reputation">50/100</span>
+            <div class="metric-meter-container">
+              <div class="metric-meter-fill reputation" id="bar-reputation" style="width: 50%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Brand -->
+        <div class="metric-pill" title="Marca personal en LinkedIn y visibilidad externa">
+          <span class="metric-icon">🌐</span>
+          <div class="metric-info">
+            <span class="metric-label">Marca Ext.</span>
+            <span class="metric-value" id="stat-brand">20/100</span>
+            <div class="metric-meter-container">
+              <div class="metric-meter-fill brand" id="bar-brand" style="width: 20%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Balance -->
+        <div class="metric-pill" title="Dinero en cuenta bancaria para formación y capital propio">
+          <span class="metric-icon">💶</span>
+          <div class="metric-info">
+            <span class="metric-label">Ahorros</span>
+            <span class="metric-value currency" id="stat-money">1.250 €</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEADER ACTIONS -->
+      <div class="header-actions">
+        <!-- Panic Button / Boss Mode -->
+        <button id="btn-boss-mode" class="btn-boss-mode" title="Camuflaje instantáneo (Tecla ESC)">
+          <span>👔</span> Boss Mode <kbd style="font-size:0.65rem; background:rgba(0,0,0,0.3); padding:2px 4px; border-radius:3px;">ESC</kbd>
+        </button>
+
+        <!-- Turn Advance Button -->
+        <button id="btn-advance-turn" class="btn-advance-turn" title="Finalizar semana y procesar turnos">
+          <span>⏩</span> Cerrar Semana
+        </button>
+      </div>
+    </header>
+
+    <!-- NAVIGATION TABS BAR -->
+    <nav class="nav-tab-bar" aria-label="Navegación principal">
+      <ul class="tabs-list">
+        <li>
+          <button class="tab-btn active" data-view="dashboard">
+            <span>📊</span> Dashboard
+          </button>
+        </li>
+        <li>
+          <button class="tab-btn" data-view="projects">
+            <span>📁</span> Cuentas & Proyectos 
+            <span class="tab-badge" id="badge-projects-count">3</span>
+          </button>
+        </li>
+        <li>
+          <button class="tab-btn" data-view="jobs">
+            <span>💼</span> Mercado Laboral & Carrera
+            <span class="tab-badge" id="badge-jobs-count" style="display:none;">!</span>
+          </button>
+        </li>
+        <li>
+          <button class="tab-btn" data-view="skills">
+            <span>🎓</span> Formación & Bienestar
+          </button>
+        </li>
+        <li>
+          <button class="tab-btn" data-view="achievements">
+            <span>🏆</span> Logros & Estadísticas
+          </button>
+        </li>
+        <li>
+          <button class="tab-btn" data-view="settings">
+            <span>⚙️</span> Ajustes & Partida
+          </button>
+        </li>
+      </ul>
+
+      <div class="nav-extra-status">
+        <span id="label-player-title">Junior Specialist</span> · 
+        <span id="label-weekly-net" style="color:var(--accent-success);">+320€ / sem</span>
+      </div>
+    </nav>
+
+    <!-- MAIN BODY CONTENT AREA -->
+    <main class="app-content-body">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: DASHBOARD OVERVIEW                 -->
+      <!-- ========================================== -->
+      <section id="view-dashboard" class="view-container active">
+        <!-- Profile & Career Summary Hero -->
+        <div class="career-hero-card">
+          <div class="hero-profile">
+            <div class="hero-avatar" id="hero-avatar-icon">💻</div>
+            <div class="hero-info">
+              <h2 id="hero-player-name">Álex García</h2>
+              <div class="hero-role-badge" id="hero-role-badge">Trainee SEO & Contenidos</div>
+              <p class="section-subtitle" id="hero-agency-full">Pixel & Burnout Media · Jornada Completa (Remota con cámaras encendidas)</p>
+            </div>
+          </div>
+          <div class="hero-stats-strip">
+            <div class="hero-stat-item">
+              <span class="hero-stat-label">Salario Bruto/Sem</span>
+              <span class="hero-stat-value" id="hero-stat-salary">450 €</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-label">Coste de Vida/Sem</span>
+              <span class="hero-stat-value" id="hero-stat-living">280 €</span>
+            </div>
+            <div class="hero-stat-item">
+              <span class="hero-stat-label">Cuentas Asignadas</span>
+              <span class="hero-stat-value" id="hero-stat-clients">3</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="height: var(--space-md);"></div>
+
+        <!-- Crisis & Alert Banner (Dynamic) -->
+        <div id="dashboard-crisis-banner" class="crisis-alert-banner" style="display:none;">
+          <div class="crisis-alert-text">
+            <span>🚨</span>
+            <span id="crisis-alert-message">¡Peligro! El cliente VIP exige auditoría antes del viernes.</span>
+          </div>
+          <button class="btn-danger btn-sm" id="btn-resolve-crisis">Gestionar Fuego</button>
+        </div>
+
+        <div style="height: var(--space-md);"></div>
+
+        <!-- Main Dashboard 2-Column Grid -->
+        <div class="dashboard-grid">
+          <!-- Left Column: Weekly Focus & Priorities -->
+          <div class="col-8">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">📌 Estado de Entregables de la Semana</h3>
+                  <p class="card-subtitle">Asigna horas y vigila la satisfacción de tus cuentas activas</p>
+                </div>
+                <button class="btn-secondary btn-sm" id="btn-quick-nav-projects">Ir a Gestión Detallada →</button>
+              </div>
+
+              <div id="dashboard-mini-projects-list" style="display:flex; flex-direction:column; gap:12px;">
+                <!-- Filled via UI Controller -->
+              </div>
+            </div>
+
+            <div style="height: var(--space-md);"></div>
+
+            <!-- Health & Survival Diagnostics -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">🩺 Diagnóstico de Salud Laboral</h3>
+                <span class="card-subtitle">Impacto de la carga de trabajo en tu rendimiento</span>
+              </div>
+              <div class="dashboard-grid" style="gap:12px;">
+                <div class="col-6" style="background:var(--bg-sidebar); padding:12px; border-radius:8px;">
+                  <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">FACTOR DE ESTRÉS ACTUAL</span>
+                  <p id="dashboard-stress-diagnostic" style="font-size:0.85rem; margin-top:4px;">Nivel controlado. Trabajas con precisión.</p>
+                </div>
+                <div class="col-6" style="background:var(--bg-sidebar); padding:12px; border-radius:8px;">
+                  <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">PERSPECTIVA DE PROMOCIÓN</span>
+                  <p id="dashboard-promo-diagnostic" style="font-size:0.85rem; margin-top:4px;">Cumpliendo expectativas de tu rango.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Corporate Highlights & Next Objectives -->
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">🎯 Objetivos de Carrera</h3>
+              </div>
+              <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; font-size:0.82rem;">
+                <li style="display:flex; align-items:flex-start; gap:8px;">
+                  <span>🔹</span>
+                  <div>
+                    <strong>Superar el Periodo de Prueba</strong>
+                    <div style="color:var(--text-muted); font-size:0.72rem;">Mantén reputación > 40 durante 4 semanas.</div>
+                  </div>
+                </li>
+                <li style="display:flex; align-items:flex-start; gap:8px;">
+                  <span>🔹</span>
+                  <div>
+                    <strong>Aprender a "Vender la Moto"</strong>
+                    <div style="color:var(--text-muted); font-size:0.72rem;">Sube Negociación y Política para camuflar retrasos.</div>
+                  </div>
+                </li>
+                <li style="display:flex; align-items:flex-start; gap:8px;">
+                  <span>🔹</span>
+                  <div>
+                    <strong>Construir Red de Salida</strong>
+                    <div style="color:var(--text-muted); font-size:0.72rem;">Alcanza 50 de Marca Personal para recibir ofertas de Headhunters.</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div style="height: var(--space-md);"></div>
+
+            <!-- Fast Wellness Action Box -->
+            <div class="card" style="border: 1px dashed var(--accent-cyan);">
+              <div class="card-header">
+                <h3 class="card-title">☕ Alivio Rápido de Emergencia</h3>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-secondary); margin-bottom:12px;">¿Al borde del colapso? Tómate un respiro antes de cerrar la semana.</p>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <button class="btn-secondary btn-sm" id="btn-quick-coffee" style="display:flex; align-items:center; justify-content:space-between;">
+                  <span>☕ Café de Especialidad & Nootrópico (-5€)</span>
+                  <strong style="color:var(--accent-cyan);">-10% Estrés</strong>
+                </button>
+                <button class="btn-secondary btn-sm" id="btn-quick-walk" style="display:flex; align-items:center; justify-content:space-between;">
+                  <span>🚶 Pausa de Escaqueo al Baño (2h PA)</span>
+                  <strong style="color:var(--accent-success);">+5% Salud Mental</strong>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: PROJECTS & CLIENTS                 -->
+      <!-- ========================================== -->
+      <section id="view-projects" class="view-container">
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">📁 Cartera de Clientes & Cuentas</h2>
+            <p class="section-subtitle">Gestiona la carga horaria semanal, reportes de vanidad ("vender la moto") y delegación de tareas</p>
+          </div>
+
+          <div class="projects-header-controls">
+            <div class="workload-tracker">
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">HORAS ASIGNADAS:</span>
+              <span class="workload-hours" id="projects-total-allocated-hours">35 / 40h</span>
+              <button class="overtime-toggle-btn" id="btn-toggle-overtime" title="Añadir hasta 15h extra semanales sacrificando Salud Mental">+ Meter Horas Extra</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Grid Container -->
+        <div class="projects-grid" id="projects-container">
+          <!-- Dynamically populated with client cards -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: JOB MARKET & CAREER PROGRESSION    -->
+      <!-- ========================================== -->
+      <section id="view-jobs" class="view-container">
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">💼 Mercado Laboral & Trayectoria</h2>
+            <p class="section-subtitle">Ascensos en tu agencia, ofertas de cazatalentos en LinkedIn y caminos hacia los Endgames</p>
+          </div>
+        </div>
+
+        <div class="job-market-container">
+          <!-- Internal Promotion Request Box -->
+          <div class="card" style="border: 1px solid var(--accent-primary);">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">🎖️ Promoción Interna en <span id="promo-agency-name">Pixel & Burnout</span></h3>
+                <p class="card-subtitle">Solicita subir de nivel salarial y categoría profesional</p>
+              </div>
+              <button class="btn-primary" id="btn-request-promotion">Solicitar Ascenso a Dirección</button>
+            </div>
+            <div id="promo-criteria-box" style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.8rem;">
+              <!-- Filled via UI -->
+            </div>
+          </div>
+
+          <!-- Headhunter Simulated Inbox -->
+          <div class="headhunter-inbox-banner">
+            <div>
+              <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-main);">📨 Buzón de Cazatalentos (LinkedIn InMail)</h3>
+              <p style="font-size:0.78rem; color:var(--text-secondary);" id="headhunter-status-msg">Tu marca personal actual (20/100) atrae ofertas júnior estándar.</p>
+            </div>
+            <button class="btn-secondary btn-sm" id="btn-refresh-jobs">Actualizar Ofertas</button>
+          </div>
+
+          <!-- External Job Board List -->
+          <div class="job-cards-list" id="job-market-listings">
+            <!-- Job listing cards populated here -->
+          </div>
+
+          <!-- Endgame Pathways Showcase -->
+          <div class="section-title-row" style="margin-top: var(--space-lg);">
+            <div>
+              <h3 class="section-title" style="font-size:1.1rem;">🏆 Rutas de Salida y Endgames</h3>
+              <p class="section-subtitle">Condiciones especiales para ganar el simulador y escapar de la rueda del hámster</p>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Endgame 1: Founder & CEO -->
+            <div class="col-4">
+              <div class="card" id="endgame-founder-card">
+                <div class="card-header">
+                  <h4 class="card-title">🚀 Montar Tu Propia Agencia</h4>
+                </div>
+                <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Conviértete en CEO. Deja de quemarte por otros y empieza a quemar a tus propios becarios.</p>
+                <div style="font-size:0.72rem; display:flex; flex-direction:column; gap:4px; margin-bottom:12px;">
+                  <div>💰 Capital necesario: <strong>25.000 €</strong></div>
+                  <div>⭐ Reputación: <strong>75/100</strong></div>
+                  <div>👑 Liderazgo: <strong>Nivel 6</strong></div>
+                </div>
+                <button class="btn-primary btn-sm" id="btn-launch-agency" disabled>Fundar Agencia (CEO)</button>
+              </div>
+            </div>
+
+            <!-- Endgame 2: In-House VP / Director -->
+            <div class="col-4">
+              <div class="card" id="endgame-inhouse-card">
+                <div class="card-header">
+                  <h4 class="card-title">🏢 In-House Dream Job</h4>
+                </div>
+                <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Fichar como Director de Marketing en cliente final. Salario astronómico, presupuestos sin drama.</p>
+                <div style="font-size:0.72rem; display:flex; flex-direction:column; gap:4px; margin-bottom:12px;">
+                  <div>🌐 Marca Personal: <strong>80/100</strong></div>
+                  <div>🔧 Especialidad Técnica: <strong>Nivel 7</strong></div>
+                  <div>🤝 Negociación: <strong>Nivel 7</strong></div>
+                </div>
+                <button class="btn-primary btn-sm" id="btn-claim-inhouse" disabled>Fichar en Cliente Final</button>
+              </div>
+            </div>
+
+            <!-- Endgame 3: Socio de la Firma -->
+            <div class="col-4">
+              <div class="card" id="endgame-partner-card">
+                <div class="card-header">
+                  <h4 class="card-title">🤝 Hacerse Socio (Equity)</h4>
+                </div>
+                <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px;">Comprar o ganarte la silla del consejo de socios de tu agencia actual.</p>
+                <div style="font-size:0.72rem; display:flex; flex-direction:column; gap:4px; margin-bottom:12px;">
+                  <div>🎖️ Rango: <strong>Director de Departamento</strong></div>
+                  <div>⭐ Reputación en Agencia: <strong>90/100</strong></div>
+                  <div>🐍 Política de Oficina: <strong>Nivel 8</strong></div>
+                </div>
+                <button class="btn-primary btn-sm" id="btn-claim-partner" disabled>Entrar en el Partner Council</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 4: SKILLS, TRAINING & WELLNESS        -->
+      <!-- ========================================== -->
+      <section id="view-skills" class="view-container">
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">🎓 Árbol de Competencias & Desarrollo</h2>
+            <p class="section-subtitle">Mejora tus habilidades laborales para desbloquear proyectos VIP, reducir costes y capear broncas</p>
+          </div>
+        </div>
+
+        <!-- 5 Skill Trees Grid -->
+        <div class="skills-grid" id="skills-container">
+          <!-- Populated dynamically: Technical, Negotiation, Productivity, Office Politics, Leadership -->
+        </div>
+
+        <div style="height: var(--space-xl);"></div>
+
+        <!-- Wellness & SaaS Pro Tools Catalog -->
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">🛍️ Inversiones en Bienestar & Herramientas</h2>
+            <p class="section-subtitle">Gasta tu salario en salud mental, nootrópicos y software que te ahorre trabajo sucio</p>
+          </div>
+        </div>
+
+        <div class="store-grid" id="wellness-store-container">
+          <!-- Populated dynamically via UI -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 5: ACHIEVEMENTS & STATISTICS          -->
+      <!-- ========================================== -->
+      <section id="view-achievements" class="view-container">
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">🏆 Logros & Historial Satírico</h2>
+            <p class="section-subtitle">Insignias corporativas desbloqueadas a lo largo de tu trayectoria</p>
+          </div>
+        </div>
+
+        <!-- Career Statistics Summary -->
+        <div class="card" style="margin-bottom: var(--space-lg);">
+          <div class="card-header">
+            <h3 class="card-title">📈 Estadísticas Históricas de Carrera</h3>
+          </div>
+          <div class="dashboard-grid" id="career-stats-grid">
+            <!-- Populated via UI -->
+          </div>
+        </div>
+
+        <!-- Achievements Grid -->
+        <div class="achievements-grid" id="achievements-container">
+          <!-- Populated dynamically via config/UI -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- VIEW 6: SETTINGS & GAME STATE              -->
+      <!-- ========================================== -->
+      <section id="view-settings" class="view-container">
+        <div class="section-title-row">
+          <div>
+            <h2 class="section-title">⚙️ Ajustes & Gestión de Partida</h2>
+            <p class="section-subtitle">Persistencia en LocalStorage, exportación JSON y configuración de turnos</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="col-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">💾 Guardado & Copias de Seguridad</h3>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:16px;">
+                La partida se guarda automáticamente en tu navegador al cerrar cada semana. Puedes exportar el archivo JSON para continuar en otro equipo o guardar un checkpoint.
+              </p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" id="btn-save-manual">Forzar Guardado Local</button>
+                <button class="btn-secondary" id="btn-export-json">Exportar Partida (.JSON)</button>
+                <label class="btn-secondary" style="cursor:pointer; display:flex; align-items:center;">
+                  Importar JSON <input type="file" id="input-import-json" accept=".json" style="display:none;">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">⏱️ Modalidad de Ciclo</h3>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:16px;">
+                Configura el ritmo temporal del simulador:
+              </p>
+              <div style="display:flex; gap:12px;">
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="sprint-config" value="1" checked id="radio-sprint-1">
+                  <span>Semana a Semana (1 Turno = 1 Semana)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="sprint-config" value="2" id="radio-sprint-2">
+                  <span>Sprints Bisemanales (2 Semanas por Turno)</span>
+                </label>
+              </div>
+
+              <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border-subtle);">
+                <button class="btn-danger" id="btn-reset-game">Reiniciar Carrera (Nueva Partida)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- RIGHT SIDEBAR: SLACK FEED SIMULATOR        -->
+      <!-- ========================================== -->
+      <aside class="side-feed-panel" aria-label="Canales de comunicación interna">
+        <div class="feed-header">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <strong style="font-size:0.82rem; letter-spacing:0.04em;">💬 SLACK DE AGENCIA</strong>
+            <span style="font-size:0.65rem; color:var(--accent-success); font-weight:700;">● Conectado</span>
+          </div>
+          <div class="channel-selector" id="feed-channel-selector">
+            <button class="channel-pill active" data-channel="general">#general</button>
+            <button class="channel-pill" data-channel="salseo">#salseo-agencia</button>
+            <button class="channel-pill" data-channel="clientes">#clientes-ardiendo</button>
+          </div>
+        </div>
+
+        <div class="feed-messages-container" id="feed-messages-container">
+          <!-- Populated dynamically via UI -->
+        </div>
+      </aside>
+
+    </main>
+
+  </div> <!-- /#app -->
+
+  <!-- ================================================================= -->
+  <!-- MODALS SYSTEM                                                     -->
+  <!-- ================================================================= -->
+
+  <!-- 1. ROLE SELECTION MODAL (NEW GAME) -->
+  <div class="modal-overlay" id="modal-role-select">
+    <div class="modal-card" style="max-width: 780px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🚀 Crea tu Perfil Profesional en Agency Hustle</h3>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 16px;">
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:4px;">Tu Nombre o Alias Profesional:</label>
+          <input type="text" id="input-new-name" value="Álex García" style="width:100%; padding:8px 12px; background:var(--bg-input); border:1px solid var(--border-medium); border-radius:6px; color:#fff; font-size:0.9rem;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:8px;">Tipo de Agencia Inicial:</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="agency-type-selector">
+            <!-- Populated via script -->
+          </div>
+        </div>
+
+        <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:8px;">Elige tu Especialización de Entrada:</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="role-cards-container">
+          <!-- 4 starting roles cards inserted dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" id="btn-start-career" style="width:100%;">Fichar en la Agencia y Empezar a Hustlear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. WEEKLY DILEMMA / CRISIS EVENT MODAL -->
+  <div class="modal-overlay" id="modal-event">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="event-modal-title">⚠️ Evento Imprevisto en la Agencia</h3>
+        <span id="event-type-badge" class="agency-type-pill" style="background:var(--accent-primary-light); padding:2px 6px; border-radius:4px;">Dilema</span>
+      </div>
+      <div class="modal-body">
+        <div class="dilemma-container">
+          <div class="dilemma-narrative" id="event-modal-text">
+            Texto del evento...
+          </div>
+          <div style="font-size:0.78rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+            ¿Qué decisión tomas ante esta situación?
+          </div>
+          <div class="dilemma-options-list" id="event-modal-options">
+            <!-- Choice buttons inserted dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. TURN RECAP SUMMARY MODAL -->
+  <div class="modal-overlay" id="modal-turn-summary">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏁 Cierre de Semana Laboral</h3>
+        <span id="recap-week-title" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--accent-cyan);">Semana 1 Completada</span>
+      </div>
+      <div class="modal-body">
+        <div class="turn-recap-grid" id="recap-content-grid">
+          <!-- Turn accounting and client results -->
+        </div>
+        <div style="margin-top:16px;" id="recap-events-bullet-list">
+          <!-- Bullet list of special occurrences -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" id="btn-close-recap">Arrancar Nueva Semana</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. GAME OVER & ENDGAME VICTORY MODAL -->
+  <div class="modal-overlay" id="modal-game-over">
+    <div class="modal-card" style="max-width: 550px; text-align:center;">
+      <div class="modal-header" style="justify-content:center;">
+        <h3 class="modal-title" id="gameover-title">💀 Colapso por Burnout</h3>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:3.5rem; margin-bottom:12px;" id="gameover-icon">🏥</div>
+        <p style="font-size:0.92rem; line-height:1.6; color:var(--text-secondary); margin-bottom:20px;" id="gameover-description">
+          Has agotado tus reservas cognitivas y físicas. El médico de cabecera te ha firmado una baja indefinida por ansiedad generalizada.
+        </p>
+        <div style="background:var(--bg-sidebar); border:1px solid var(--border-subtle); border-radius:8px; padding:12px; font-size:0.82rem; margin-bottom:16px;">
+          <div id="gameover-stats">Duración: 14 semanas · Dinero ahorrado: 1.450 € · Clientes gestionados: 7</div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:center;">
+        <button class="btn-primary" id="btn-gameover-restart">Empezar de Nuevo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- 5. BOSS MODE / PANIC BUTTON CAMOUFLAGE OVERLAY                   -->
+  <!-- ================================================================= -->
+  <div id="boss-screen-overlay">
+    <!-- Excel Titlebar -->
+    <div class="excel-titlebar">
+      <div class="excel-doc-name">
+        <span class="excel-icon-pill">XLSX</span>
+        <strong>Marketing_Q3_Budget_Forecast_BlendedCAC_FINAL_v4_definitivo(1).xlsx - Excel</strong>
+      </div>
+      <div class="excel-search-bar">Buscar (Alt+Q)</div>
+      <div style="display:flex; gap:12px; font-size:12px;">
+        <span>Autoguardado: <strong>Activado</strong></span>
+        <span>Compartir</span>
+      </div>
+    </div>
+
+    <!-- Excel Ribbon Tabs -->
+    <div class="excel-ribbon-tabs">
+      <span class="ribbon-tab active">Archivo</span>
+      <span class="ribbon-tab">Inicio</span>
+      <span class="ribbon-tab">Insertar</span>
+      <span class="ribbon-tab">Disposición de página</span>
+      <span class="ribbon-tab">Fórmulas</span>
+      <span class="ribbon-tab">Datos</span>
+      <span class="ribbon-tab">Revisar</span>
+      <span class="ribbon-tab">Vista</span>
+    </div>
+
+    <!-- Excel Toolbar -->
+    <div class="excel-toolbar">
+      <div class="toolbar-group">
+        <button style="border:none; background:none; cursor:default;">💾</button>
+        <button style="border:none; background:none; cursor:default;">↩️</button>
+        <button style="border:none; background:none; cursor:default;">↪️</button>
+      </div>
+      <div class="toolbar-group">
+        <select style="font-size:11px; padding:2px;"><option>Calibri</option><option>Arial</option></select>
+        <select style="font-size:11px; padding:2px;"><option>11</option><option>12</option></select>
+        <strong>N</strong> <em>K</em> <u>S</u>
+      </div>
+      <div class="toolbar-group">
+        <span>€</span> <span>%</span> <span>0,00</span>
+      </div>
+      <div style="margin-left:auto; font-size:11px; color:#605e5c;">
+        Modo de cálculo: Automático
+      </div>
+    </div>
+
+    <!-- Formula Bar -->
+    <div class="excel-formula-bar">
+      <div class="formula-cell-id">E14</div>
+      <div class="formula-fx">fx</div>
+      <input type="text" class="formula-input" value="=XLOOKUP(A14, 'Raw_AdSpend_Export'!A:A, 'Raw_AdSpend_Export'!G:G, 0)*1.18" readonly>
+    </div>
+
+    <!-- Spreadsheet Grid -->
+    <div class="excel-grid-container">
+      <table class="spreadsheet-table">
+        <thead>
+          <tr>
+            <th class="row-header"></th>
+            <th class="col-header" style="width: 40px;">A</th>
+            <th class="col-header" style="width: 200px;">B</th>
+            <th class="col-header" style="width: 110px;">C</th>
+            <th class="col-header" style="width: 90px;">D</th>
+            <th class="col-header" style="width: 80px;">E</th>
+            <th class="col-header" style="width: 90px;">F</th>
+            <th class="col-header" style="width: 85px;">G</th>
+            <th class="col-header" style="width: 95px;">H</th>
+            <th class="col-header" style="width: 100px;">I</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-header">1</td>
+            <td colspan="8" class="cell-header-corp">REPORTE FINANCIERO TRIMESTRAL DE RENDIMIENTO DE MEDIOS PAGADOS - Q3</td>
+          </tr>
+          <tr>
+            <td class="row-header">2</td>
+            <td><strong>ID</strong></td>
+            <td class="cell-sub-header">Canal Publicitario</td>
+            <td class="cell-sub-header cell-num">Inversión Bruta (€)</td>
+            <td class="cell-sub-header cell-num">Impresiones</td>
+            <td class="cell-sub-header cell-num">CTR Promedio</td>
+            <td class="cell-sub-header cell-num">CPC Medio (€)</td>
+            <td class="cell-sub-header cell-num">CPA (€)</td>
+            <td class="cell-sub-header cell-num">ROAS Real</td>
+          </tr>
+          <tr>
+            <td class="row-header">3</td>
+            <td>CMP-01</td>
+            <td>Google Ads - PMax Retail</td>
+            <td class="cell-num">14.500,00 €</td>
+            <td class="cell-num">842.120</td>
+            <td class="cell-num">3,42 %</td>
+            <td class="cell-num">0,52 €</td>
+            <td class="cell-num">18,40 €</td>
+            <td class="cell-num cell-positive">4,82 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">4</td>
+            <td>CMP-02</td>
+            <td>Google Ads - Brand Search</td>
+            <td class="cell-num">3.200,00 €</td>
+            <td class="cell-num">95.400</td>
+            <td class="cell-num">14,20 %</td>
+            <td class="cell-num">0,24 €</td>
+            <td class="cell-num">4,12 €</td>
+            <td class="cell-num cell-positive">9,40 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">5</td>
+            <td>CMP-03</td>
+            <td>Meta Ads - Prospecting ASC</td>
+            <td class="cell-num">21.800,00 €</td>
+            <td class="cell-num">1.420.500</td>
+            <td class="cell-num">1,85 %</td>
+            <td class="cell-num">0,83 €</td>
+            <td class="cell-num">32,50 €</td>
+            <td class="cell-num cell-positive">2,65 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">6</td>
+            <td>CMP-04</td>
+            <td>Meta Ads - DPA Retargeting</td>
+            <td class="cell-num">5.400,00 €</td>
+            <td class="cell-num">210.000</td>
+            <td class="cell-num">4,10 %</td>
+            <td class="cell-num">0,62 €</td>
+            <td class="cell-num">12,80 €</td>
+            <td class="cell-num cell-positive">6,10 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">7</td>
+            <td>CMP-05</td>
+            <td>TikTok Ads - Spark UGC</td>
+            <td class="cell-num">8.200,00 €</td>
+            <td class="cell-num">980.000</td>
+            <td class="cell-num">0,94 %</td>
+            <td class="cell-num">0,89 €</td>
+            <td class="cell-num cell-negative">48,20 €</td>
+            <td class="cell-num cell-negative">1,42 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">8</td>
+            <td>CMP-06</td>
+            <td>LinkedIn Ads - ABM Decision Makers</td>
+            <td class="cell-num">12.000,00 €</td>
+            <td class="cell-num">85.000</td>
+            <td class="cell-num">0,68 %</td>
+            <td class="cell-num">8,45 €</td>
+            <td class="cell-num">142,00 €</td>
+            <td class="cell-num cell-positive">3,10 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">9</td>
+            <td>CMP-07</td>
+            <td>Influencer Marketing Seeding</td>
+            <td class="cell-num">6.500,00 €</td>
+            <td class="cell-num">650.000</td>
+            <td class="cell-num">2,10 %</td>
+            <td class="cell-num">--</td>
+            <td class="cell-num">29,10 €</td>
+            <td class="cell-num cell-positive">2,90 x</td>
+          </tr>
+          <tr>
+            <td class="row-header">10</td>
+            <td class="cell-total" colspan="2">TOTAL CONSOLIDADO Q3</td>
+            <td class="cell-total cell-num">71.600,00 €</td>
+            <td class="cell-total cell-num">4.283.020</td>
+            <td class="cell-total cell-num">2,48 %</td>
+            <td class="cell-total cell-num">0,91 €</td>
+            <td class="cell-total cell-num">26,45 €</td>
+            <td class="cell-total cell-num cell-positive">3,64 x</td>
+          </tr>
+          <!-- Spacer rows -->
+          <tr><td class="row-header">11</td><td colspan="8"></td></tr>
+          <tr>
+            <td class="row-header">12</td>
+            <td colspan="4" class="cell-sub-header">Métricas de Rentabilidad Neta (EBITDA Operativo)</td>
+            <td colspan="4" class="cell-sub-header">Análisis de Desviación Presupuestaria</td>
+          </tr>
+          <tr>
+            <td class="row-header">13</td>
+            <td>Margen Bruto de Ventas</td>
+            <td class="cell-num">260.624,00 €</td>
+            <td colspan="2">Ratio Margen: <strong>48,5%</strong></td>
+            <td>Presupuesto Autorizado</td>
+            <td class="cell-num">75.000,00 €</td>
+            <td colspan="2" class="cell-positive">Superávit: +3.400 €</td>
+          </tr>
+          <tr>
+            <td class="row-header">14</td>
+            <td>Gastos de Agencia (Fee Fijo)</td>
+            <td class="cell-num">8.500,00 €</td>
+            <td colspan="2">Fee Variable: <strong>4.200,00 €</strong></td>
+            <td>Blended CAC Real</td>
+            <td class="cell-num">26,45 €</td>
+            <td colspan="2" class="cell-positive">Target CAC: 30,00 € (OK)</td>
+          </tr>
+          <tr>
+            <td class="row-header">15</td>
+            <td><strong>Beneficio Neto Atribuible</strong></td>
+            <td class="cell-num cell-positive"><strong>176.324,00 €</strong></td>
+            <td colspan="2">ROI Estimado: <strong>+246%</strong></td>
+            <td>Status de Auditoría</td>
+            <td colspan="3" style="color:#0b7a3e; font-weight:700;">APROBADO POR CFO</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Excel Sheet Tabs Footer -->
+    <div class="excel-sheet-footer">
+      <div class="sheet-tabs-list">
+        <div class="sheet-tab-item">Resumen_Ejecutivo_Q3</div>
+        <div class="sheet-tab-item inactive">Raw_AdSpend_Export</div>
+        <div class="sheet-tab-item inactive">Attribution_Markov</div>
+        <div class="sheet-tab-item inactive">Forecast_Q4_BlackFriday</div>
+      </div>
+      <div class="boss-exit-hint" id="boss-exit-btn">
+        Presiona <strong>ESC</strong> o haz clic aquí para volver al juego
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ES6 MODULE APPLICATION ENTRYPOINT -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
